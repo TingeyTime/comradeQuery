@@ -15,9 +15,19 @@ def transition_skip_metadata(fsm_obj):
     pass
 
 def transition_metadata(fsm_obj):
-    meta_data_re_search = re.search(r'^@(?P<name>\w+)\s+(?P<value>.*)$', fsm_obj.current_line)
+    result = re.search(r'^@(?P<name>\w+)\s+(?P<value>.*)$', fsm_obj.current_line)
     # TODO: Handle errors
-    fsm_obj.current_query.metadata[meta_data_re_search.group("name")] = meta_data_re_search.group("value")
+    match result.group("name").lower():
+        case "name":
+            fsm_obj.current_query.name = result.group("value")
+        case "author":
+            fsm_obj.current_query.author = result.group("value")
+        case "db":
+            fsm_obj.current_query.db = result.group("value")
+        case None:
+            pass
+        case _:
+            fsm_obj.current_query.extraData[result.group("name")] = result.group("value")
 
 # def transition_metadata_repeat(fsm_obj):
 #     pass
@@ -184,10 +194,10 @@ for map_item in FSM_MAP:
 
 class Query:
     def __init__(self):
-        self.metadata = {
-            "name": None,
-            "author": None
-        }
+        self.name = None
+        self.author = None
+        self.db = None
+        self.extraData = {}
         self.description = ""
         self.content = ""
 
