@@ -27,7 +27,7 @@ def transition_metadata(fsm_obj):
         case None:
             pass
         case _:
-            fsm_obj.current_query.extraData[result.group("name")] = result.group("value")
+            fsm_obj.current_query.extra[result.group("name")] = result.group("value")
 
 # def transition_metadata_repeat(fsm_obj):
 #     pass
@@ -203,8 +203,8 @@ class Query:
         self.name = None
         self.author = None
         self.db = None
-        self.extraData = {}
         self.description = ""
+        self.extra = {}
         self.content = ""
 
     def __repr__(self) -> str:
@@ -212,7 +212,7 @@ class Query:
 
 
 class Query_Parse_FSM:
-    def __init__(self, file_str: str) -> None:
+    def __init__(self, file_str: str, verbose: bool = False) -> None:
         self.file_str = file_str
         self.current_state = S_NEW_QUERY
         self.query_count = 0
@@ -220,11 +220,13 @@ class Query_Parse_FSM:
         self.queries = []
         self.current_line = ""
 
+        self.verbose = verbose
+
     def run(self):
         for line in self.file_str.split('\n'):
-            # print(f"PROGRESS == {self.current_query}")
             if not self.process_next(line.lstrip()):
-                print(f"**SKIP** in {self.current_state} :: \"{line}\"")
+                if self.verbose:
+                    print(f"**SKIP** in {self.current_state} :: \"{line}\"")
 
     def process_next(self, aline):
         self.current_line = aline
@@ -245,6 +247,7 @@ class Query_Parse_FSM:
         return False
 
     def update_state(self, new_state, callback):
-        print(f"{self.current_state} -> {new_state} :: \"{self.current_line}\"")
+        if self.verbose:
+            print(f"{self.current_state} -> {new_state} :: \"{self.current_line}\"")
         self.current_state = new_state
         callback(self)
