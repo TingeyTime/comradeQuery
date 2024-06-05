@@ -3,7 +3,7 @@ import re
 
 def transition_quick_name(fsm_obj):
     query_name = re.sub(r'--\s*', '', fsm_obj.current_line)
-    fsm_obj.current_query.metadata['name'] = query_name
+    fsm_obj.current_query.name = query_name
 
 def transition_skip_header(fsm_obj):
     pass
@@ -108,14 +108,14 @@ FSM_MAP = [
     {
         'src': S_NEW_QUERY,
         'dst': S_START_HEADER,
-        'pattern': '^/*',
+        'pattern': '^/\*',
         'callback': T_START_HEADER
     },
     {
         'src': S_NEW_QUERY,
         'dst': S_QUERY,
         'pattern': '.*',
-        'callback': T_SKIP_HEADER
+        'callback': T_QUERY
     },
     {
         'src': S_START_HEADER,
@@ -170,6 +170,12 @@ FSM_MAP = [
     },
     {
         'src': S_END_HEADER,
+        'dst': S_QUERY,
+        'pattern': '.*',
+        'callback': T_QUERY
+    },
+    {
+        'src': S_QUICK_NAME,
         'dst': S_QUERY,
         'pattern': '.*',
         'callback': T_QUERY
