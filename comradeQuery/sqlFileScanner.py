@@ -1,4 +1,5 @@
 import re
+from .models import Query
 
 
 def transition_quick_name(fsm_obj):
@@ -194,24 +195,12 @@ FSM_MAP = [
     },
 ]
 
+
 for map_item in FSM_MAP:
     map_item['pattern_re_compiled'] = re.compile(map_item['pattern'])
 
 
-class Query:
-    def __init__(self):
-        self.name = None
-        self.author = None
-        self.db = None
-        self.description = ""
-        self.extra = {}
-        self.content = ""
-
-    def __repr__(self) -> str:
-        return f"<Query: {self.__dict__}>"
-
-
-class Query_Parse_FSM:
+class SQLFileScanner:
     def __init__(self, file_str: str, verbose: bool = False) -> None:
         self.file_str = file_str
         self.current_state = S_NEW_QUERY

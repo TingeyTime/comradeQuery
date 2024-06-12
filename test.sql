@@ -25,3 +25,12 @@ This is another Description
 SELECT 'something'
 FROM everything.everwhere AS ee
 WHERE ee.all is 'bad';
+
+
+-- Brody
+SELECT
+"brody";
+
+
+SELECT
+1;
